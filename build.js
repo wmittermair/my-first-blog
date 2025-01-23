@@ -5,7 +5,7 @@ const frontMatter = require('front-matter');
 
 // Konfiguriere die Verzeichnisse
 const contentDir = 'content';
-const outputDir = 'dist';
+const outputDir = 'docs';
 
 // Funktion zum Generieren des HTML Templates
 function generateHtml(content, attributes = {}) {
