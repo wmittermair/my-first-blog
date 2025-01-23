@@ -1,0 +1,15 @@
+    <footer class="main-footer">
+        <p>&copy; 2024 Meine Website. Alle Rechte vorbehalten.</p>
+    </footer>
+    <script src="${scriptPrefix}scripts/main.js"></script>
+    <script src="${scriptPrefix}scripts/markdown.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const content = document.querySelector('.content');
+            if (content) {
+                content.innerHTML = marked(content.textContent);
+            }
+        });
+    </script>
+</body>
+</html> 

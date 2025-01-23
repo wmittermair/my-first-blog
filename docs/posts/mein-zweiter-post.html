@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mein zweiter Blog-Post</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../blog.html">Blog</a></li>
+                <li><a href="../about.html">Über uns</a></li>
+                <li><a href="../faq.html">FAQ</a></li>
+                <li>
+                    <button id="celebrateBtn" class="celebrate-btn">
+                        🎉
+                        <span class="fallback-text">Feiern!</span>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    </header>
+</body>
+</html> 
+<main>
+    <div class="blog-post">
+        <div class="content">
+            <h1>Neue Features auf meiner Website</h1>
+<p>Ich freue mich, einige neue Features auf meiner Website vorstellen zu können.</p>
+<h2>Markdown-Unterstützung</h2>
+<p>Ab sofort können alle Blog-Beiträge in Markdown geschrieben werden. Das bietet viele Vorteile:</p>
+<ul>
+<li>Einfache Formatierung</li>
+<li>Bessere Lesbarkeit im Quelltext</li>
+<li>Unterstützung für Code-Blöcke</li>
+</ul>
+<h3>Beispiel für einen Code-Block</h3>
+<pre><code class="language-javascript">function showFeatures() {
+    const features = [
+        &quot;Markdown-Support&quot;,
+        &quot;Responsive Design&quot;,
+        &quot;Schnelle Ladezeiten&quot;
+    ];
+    
+    features.forEach(feature =&gt; {
+        console.log(`Neues Feature: ${feature}`);
+    });
+}
+</code></pre>
+<h2>Was kommt als Nächstes?</h2>
+<p>In den kommenden Wochen plane ich weitere Verbesserungen. Bleiben Sie gespannt! </p>
+
+        </div>
+    </div>
+</main>
+    <footer class="main-footer">
+        <p>&copy; 2024 Meine Website. Alle Rechte vorbehalten.</p>
+    </footer>
+    <script src="../scripts/main.js"></script>
+    <script src="../scripts/markdown.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const content = document.querySelector('.content');
+            if (content) {
+                content.innerHTML = marked(content.textContent);
+            }
+        });
+    </script>
+</body>
+</html>  

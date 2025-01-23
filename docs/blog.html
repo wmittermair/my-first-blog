@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -14,7 +13,7 @@
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="blog.html">Blog</a></li>
-                <li><a href="about.html">Über mich</a></li>
+                <li><a href="about.html">Über uns</a></li>
                 <li><a href="faq.html">FAQ</a></li>
                 <li>
                     <button id="celebrateBtn" class="celebrate-btn">
@@ -25,33 +24,35 @@
             </ul>
         </nav>
     </header>
-
+</body>
+</html> 
     <main>
         <div class="content">
-            <h1>Blog-Übersicht</h1>
+            <h1>Willkommen auf meinem Blog</h1>
 <p>Hier finden Sie alle meine Blog-Beiträge zu verschiedenen Themen.</p>
-<h2>Neueste Beiträge</h2>
-<ul>
-<li><a href="mein-erster-post.html">Mein erster Blog-Post</a></li>
-<li><em>Weitere Beiträge folgen...</em></li>
-</ul>
-<h2>Themen</h2>
-<ul>
-<li>Webentwicklung</li>
-<li>Design</li>
-<li>Technologie</li>
-<li>Tutorials</li>
-</ul>
-<h2>Newsletter</h2>
-<p>Bleiben Sie auf dem Laufenden und abonnieren Sie meinen Newsletter. Ich verspreche, nur relevante Inhalte zu teilen! </p>
-
+<section class="latest-posts">
+            <h2>Neueste Blog-Posts</h2>
+            <ul>
+                <li><a href="posts/mein-vierter-post.html">Kreative Bildgestaltung mit Midjourney</a> (Mittwoch, 20.03.2024)</li>
+<li><a href="posts/mein-dritter-post.html">Mein dritter Blog-Post</a> (Dienstag, 19.03.2024)</li>
+<li><a href="posts/mein-zweiter-post.html">Mein zweiter Blog-Post</a> (Dienstag, 19.03.2024)</li>
+<li><a href="posts/mein-erster-post.html">Mein erster Blog-Post</a> (Dienstag, 23.01.2024)</li>
+            </ul>
+        </section>
         </div>
     </main>
-
-    <footer>
-        <p>&copy; 2024 Ihre Website</p>
+        <footer class="main-footer">
+        <p>&copy; 2024 Meine Website. Alle Rechte vorbehalten.</p>
     </footer>
-
     <script src="scripts/main.js"></script>
+    <script src="scripts/markdown.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const content = document.querySelector('.content');
+            if (content) {
+                content.innerHTML = marked(content.textContent);
+            }
+        });
+    </script>
 </body>
-</html>
+</html> 

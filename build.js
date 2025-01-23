@@ -9,62 +9,171 @@ const postsDir = path.join(contentDir, 'posts');
 const outputDir = 'docs';
 const templatesDir = 'templates';
 
-// Funktion zum Generieren des Standard-HTML Templates
-function generateHtml(content, attributes = {}) {
-    return `
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${attributes.title || 'Meine Website'}</title>
-    <link rel="stylesheet" href="styles/main.css">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
-</head>
-<body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li><a href="about.html">Über mich</a></li>
-                <li><a href="faq.html">FAQ</a></li>
-                <li>
-                    <button id="celebrateBtn" class="celebrate-btn">
-                        🎉
-                        <span class="fallback-text">Feiern!</span>
-                    </button>
-                </li>
-            </ul>
-        </nav>
-    </header>
+// Funktion zur Formatierung des Datums
+function formatDate(date) {
+    const d = new Date(date);
+    const weekdays = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+    const day = d.getDate().toString().padStart(2, '0');
+    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+    const year = d.getFullYear();
+    const weekday = weekdays[d.getDay()];
+    return `(${weekday}, ${day}.${month}.${year})`;
+}
 
+// Lade Header und Footer Templates
+async function loadTemplates() {
+    const header = await fs.readFile(path.join(templatesDir, 'header.html'), 'utf-8');
+    const footer = await fs.readFile(path.join(templatesDir, 'footer.html'), 'utf-8');
+    return { header, footer };
+}
+
+// Funktion zum Generieren des Standard-HTML Templates
+async function generateHtml(content, attributes = {}, blogPosts = []) {
+    const { header, footer } = await loadTemplates();
+    
+    const finalHeader = header
+        .replace('${title}', attributes.title || 'Meine Website')
+        .replace('${stylePrefix}', '')
+        .replace(/\${prefix}/g, '');
+        
+    const finalFooter = footer
+        .replace(/\${scriptPrefix}/g, '');
+
+    // Füge die neuesten Blog-Posts zur Startseite hinzu
+    let latestPosts = '';
+    if (attributes.isHome && blogPosts.length > 0) {
+        latestPosts = `
+        <section class="latest-posts">
+            <h2>Neueste Blog-Posts</h2>
+            <ul>
+                ${blogPosts
+                    .sort((a, b) => new Date(b.date) - new Date(a.date))
+                    .slice(0, 5)
+                    .map(post => `<li><a href="${post.url}">${post.title}</a> ${formatDate(post.date)}</li>`)
+                    .join('\n')}
+            </ul>
+        </section>`;
+        content = content + latestPosts;
+    }
+
+    return finalHeader + `
     <main>
         <div class="content">
             ${content}
         </div>
     </main>
-
-    <footer>
-        <p>&copy; 2024 Ihre Website</p>
-    </footer>
-
-    <script src="scripts/main.js"></script>
-</body>
-</html>
-`;}
+    ` + finalFooter;
+}
 
 // Funktion zum Generieren des Blog-Post HTML
 async function generateBlogPostHtml(content, attributes = {}) {
-    const templatePath = path.join(templatesDir, 'blog-post.html');
-    let template = await fs.readFile(templatePath, 'utf-8');
+    const { header, footer } = await loadTemplates();
+    const blogTemplate = await fs.readFile(path.join(templatesDir, 'blog-post.html'), 'utf-8');
     
-    // Ersetze Template-Variablen
-    template = template.replace('{{title}}', attributes.title || 'Blog Post');
-    template = template.replace('{{date}}', attributes.date || new Date().toISOString().split('T')[0]);
-    template = template.replace('{{content}}', content);
+    const finalHeader = header
+        .replace('${title}', attributes.title || 'Blog Post')
+        .replace('${stylePrefix}', '../')
+        .replace(/\${prefix}/g, '../');
+        
+    const finalFooter = footer
+        .replace(/\${scriptPrefix}/g, '../');
+
+    // Füge das Datum nach der ersten Überschrift ein
+    const date = attributes.date || new Date().toISOString().split('T')[0];
+    const contentWithDate = content.replace(/^(# .+)$/m, `$1\n\n${date}`);
+
+    return blogTemplate
+        .replace('${header}', finalHeader)
+        .replace('${footer}', finalFooter)
+        .replace('${content}', contentWithDate);
+}
+
+// Funktion zum Scannen des Posts-Verzeichnisses und Generieren der Blog-Liste
+async function generateBlogList() {
+    const postsDir = path.join(contentDir, 'posts');
+    const files = await fs.readdir(postsDir);
+    const posts = [];
+
+    for (const file of files) {
+        if (file.endsWith('.md')) {
+            const content = await fs.readFile(path.join(postsDir, file), 'utf-8');
+            const { attributes } = frontMatter(content);
+            
+            posts.push({
+                title: attributes.title || file.replace('.md', ''),
+                date: attributes.date || new Date().toISOString(),
+                url: `posts/${file.replace('.md', '.html')}`
+            });
+        }
+    }
+
+    // Sortiere Posts nach Datum (neueste zuerst)
+    return posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+}
+
+// Aktualisiere die Blog-Übersichtsseite
+async function updateBlogIndex() {
+    const blogIndexPath = path.join(contentDir, 'blog.md');
+    if (await fs.pathExists(blogIndexPath)) {
+        let blogContent = await fs.readFile(blogIndexPath, 'utf-8');
+        const { attributes, body } = frontMatter(blogContent);
+        
+        // Hole alle Blog-Posts
+        const blogPosts = await generateBlogList();
+        
+        // Generiere die Liste der Blog-Posts
+        const postsList = `<section class="latest-posts">
+            <h2>Neueste Blog-Posts</h2>
+            <ul>
+                ${blogPosts
+                    .sort((a, b) => new Date(b.date) - new Date(a.date))
+                    .map(post => `<li><a href="${post.url}">${post.title}</a> ${formatDate(post.date)}</li>`)
+                    .join('\n')}
+            </ul>
+        </section>`;
+
+        // Aktualisiere den Content
+        // Suche nach dem vorhandenen latest-posts section und ersetze sie
+        let updatedContent;
+        if (body.includes('<section class="latest-posts">')) {
+            updatedContent = body.replace(
+                /<section class="latest-posts">[\s\S]*?<\/section>/,
+                postsList
+            );
+        } else {
+            // Wenn keine section existiert, füge sie nach der ersten Überschrift ein
+            updatedContent = body.replace(
+                /^(# .+\n\n)/m,
+                `$1${postsList}\n\n`
+            );
+        }
+
+        // Erstelle den vollständigen Inhalt mit Front Matter
+        const fullContent = `---\ntitle: ${attributes.title || 'Blog'}\ndate: ${new Date().toISOString()}\n---\n\n${updatedContent}`;
+        
+        // Speichere die aktualisierte Markdown-Datei
+        await fs.writeFile(blogIndexPath, fullContent);
+        
+        // Generiere die HTML-Version
+        const html = marked.parse(updatedContent);
+        const finalHtml = await generateHtml(html, attributes);
+        const outputPath = path.join(outputDir, 'blog.html');
+        await fs.writeFile(outputPath, finalHtml);
+    }
+}
+
+async function buildSite() {
+    // Lösche alle HTML-Dateien im docs-Ordner
+    await fs.emptyDir(outputDir);
     
-    return template;
+    // Kopiere statische Assets (CSS, JS, Bilder etc.)
+    await fs.copy(path.join(__dirname, 'styles'), path.join(outputDir, 'styles'));
+    await fs.copy(path.join(__dirname, 'scripts'), path.join(outputDir, 'scripts'));
+    
+    // Generiere alle Seiten neu
+    await generatePages();
+    await generateBlogPosts();
+    await updateBlogIndex();
 }
 
 // Erstelle Build-Funktion
@@ -82,6 +191,23 @@ async function build() {
         await fs.copy('scripts', path.join(outputDir, 'scripts'));
     }
 
+    // Sammle zuerst alle Blog-Posts
+    const blogPosts = [];
+    if (await fs.pathExists(postsDir)) {
+        const posts = await fs.readdir(postsDir);
+        for (const post of posts) {
+            if (path.extname(post) === '.md') {
+                const content = await fs.readFile(path.join(postsDir, post), 'utf-8');
+                const { attributes } = frontMatter(content);
+                blogPosts.push({
+                    title: attributes.title,
+                    date: attributes.date,
+                    url: `posts/${post.replace('.md', '.html')}`
+                });
+            }
+        }
+    }
+
     // Verarbeite Hauptseiten
     const files = await fs.readdir(contentDir);
     for (const file of files) {
@@ -90,8 +216,12 @@ async function build() {
             const { attributes, body } = frontMatter(content);
             const html = marked.parse(body);
 
+            // Prüfe, ob es sich um die Startseite handelt
+            const isHome = file === 'index.md';
+            attributes.isHome = isHome;
+
             // Erstelle HTML mit Template
-            const finalHtml = generateHtml(html, attributes);
+            const finalHtml = await generateHtml(html, attributes, blogPosts);
             
             // Speichere die HTML-Datei
             const outputPath = path.join(outputDir, file.replace('.md', '.html'));
@@ -102,7 +232,6 @@ async function build() {
     // Verarbeite Blog-Posts
     if (await fs.pathExists(postsDir)) {
         const posts = await fs.readdir(postsDir);
-        const blogPosts = [];
 
         for (const post of posts) {
             if (path.extname(post) === '.md') {
@@ -117,34 +246,11 @@ async function build() {
                 const outputPath = path.join(outputDir, 'posts', post.replace('.md', '.html'));
                 await fs.ensureDir(path.dirname(outputPath));
                 await fs.writeFile(outputPath, finalHtml);
-
-                // Sammle Post-Informationen für die Blog-Übersicht
-                blogPosts.push({
-                    title: attributes.title,
-                    date: attributes.date,
-                    url: `posts/${post.replace('.md', '.html')}`
-                });
             }
         }
 
         // Aktualisiere die Blog-Übersichtsseite
-        const blogIndexPath = path.join(contentDir, 'blog.md');
-        if (await fs.pathExists(blogIndexPath)) {
-            let blogContent = await fs.readFile(blogIndexPath, 'utf-8');
-            const { attributes, body } = frontMatter(blogContent);
-            
-            // Füge die Liste der Blog-Posts hinzu
-            const postsList = blogPosts
-                .sort((a, b) => new Date(b.date) - new Date(a.date))
-                .map(post => `- [${post.title}](${post.url}) (${post.date})`)
-                .join('\n');
-
-            const updatedContent = body.replace(/## Neueste Beiträge\n\n[\s\S]*?(?=\n\n|$)/, 
-                `## Neueste Beiträge\n\n${postsList}`);
-
-            await fs.writeFile(blogIndexPath, 
-                `---\n${Object.entries(attributes).map(([k, v]) => `${k}: ${v}`).join('\n')}\n---\n\n${updatedContent}`);
-        }
+        await updateBlogIndex();
     }
 
     console.log('Build erfolgreich abgeschlossen!');

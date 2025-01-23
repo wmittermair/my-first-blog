@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mein dritter Blog-Post</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../blog.html">Blog</a></li>
+                <li><a href="../about.html">Über uns</a></li>
+                <li><a href="../faq.html">FAQ</a></li>
+                <li>
+                    <button id="celebrateBtn" class="celebrate-btn">
+                        🎉
+                        <span class="fallback-text">Feiern!</span>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    </header>
+</body>
+</html> 
+<main>
+    <div class="blog-post">
+        <div class="content">
+            <h1>Programmieren mit KI - Eine neue Ära der Softwareentwicklung</h1>
+<p>Als Entwickler bin ich immer auf der Suche nach Werkzeugen, die meine Arbeit effizienter machen. Die Integration von KI in meinen Entwicklungsprozess war dabei ein echter Gamechanger.</p>
+<h2>Wie KI meinen Arbeitsalltag verändert hat</h2>
+<p>Die Vorteile sind beeindruckend:</p>
+<ul>
+<li>Schnellere Problemlösung durch KI-gestützte Codevorschläge</li>
+<li>Automatische Erkennung von Best Practices</li>
+<li>Intelligente Fehlersuche und Debugging</li>
+<li>Hilfe bei der Code-Dokumentation</li>
+</ul>
+<h3>Ein praktisches Beispiel</h3>
+<p>Früher hätte ich komplexe Regex-Muster mühsam selbst erstellen müssen. Heute frage ich einfach die KI:</p>
+<pre><code class="language-python"># Beispiel für eine E-Mail-Validierung
+email_pattern = r&#39;^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}${content}#39;
+</code></pre>
+<h2>Meine Top 3 KI-Tools</h2>
+<ol>
+<li><strong>GitHub Copilot</strong>: Mein ständiger Programmier-Begleiter</li>
+<li><strong>ChatGPT</strong>: Perfekt für Code-Reviews und Problemlösungen</li>
+<li><strong>Amazon CodeWhisperer</strong>: Großartig für AWS-Entwicklung</li>
+</ol>
+<h2>Grenzen und Verantwortung</h2>
+<p>Natürlich ist KI kein Wundermittel. Man muss:</p>
+<ul>
+<li>Den generierten Code immer überprüfen</li>
+<li>Die Grundlagen des Programmierens verstehen</li>
+<li>Datenschutz und Sicherheit beachten</li>
+</ul>
+<h2>Ausblick</h2>
+<p>Die Entwicklung schreitet rasant voran. Ich bin gespannt, welche neuen Möglichkeiten sich in den nächsten Jahren noch eröffnen werden.</p>
+<p>Habt ihr auch schon Erfahrungen mit KI-gestützter Entwicklung gemacht? Lasst es mich in den Kommentaren wissen! </p>
+
+        </div>
+    </div>
+</main>
+    <footer class="main-footer">
+        <p>&copy; 2024 Meine Website. Alle Rechte vorbehalten.</p>
+    </footer>
+    <script src="../scripts/main.js"></script>
+    <script src="../scripts/markdown.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const content = document.querySelector('.content');
+            if (content) {
+                content.innerHTML = marked(content.textContent);
+            }
+        });
+    </script>
+</body>
+</html>  

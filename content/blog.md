@@ -1,24 +1,18 @@
 ---
 title: Blog
-date: Wed Jan 24 2024 01:00:00 GMT+0100 (Mitteleuropäische Normalzeit)
+date: 2025-01-23T20:24:06.192Z
 ---
 
-# Blog-Übersicht
+# Willkommen auf meinem Blog
 
 Hier finden Sie alle meine Blog-Beiträge zu verschiedenen Themen.
 
-## Neueste Beiträge
-
-- [Mein erster Blog-Post](mein-erster-post.html)
-- *Weitere Beiträge folgen...*
-
-## Themen
-
-- Webentwicklung
-- Design
-- Technologie
-- Tutorials
-
-## Newsletter
-
-Bleiben Sie auf dem Laufenden und abonnieren Sie meinen Newsletter. Ich verspreche, nur relevante Inhalte zu teilen! 
+<section class="latest-posts">
+            <h2>Neueste Blog-Posts</h2>
+            <ul>
+                <li><a href="posts/mein-vierter-post.html">Kreative Bildgestaltung mit Midjourney</a> (Mittwoch, 20.03.2024)</li>
+<li><a href="posts/mein-dritter-post.html">Mein dritter Blog-Post</a> (Dienstag, 19.03.2024)</li>
+<li><a href="posts/mein-zweiter-post.html">Mein zweiter Blog-Post</a> (Dienstag, 19.03.2024)</li>
+<li><a href="posts/mein-erster-post.html">Mein erster Blog-Post</a> (Dienstag, 23.01.2024)</li>
+            </ul>
+        </section>
