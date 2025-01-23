@@ -1,0 +1,19 @@
+{
+  "name": "static-site",
+  "version": "1.0.0",
+  "description": "Eine statische Webseite mit HTML, CSS und JavaScript und einfachen node libraries.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node build.js",
+    "dev": "nodemon build.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "front-matter": "^4.0.2",
+    "fs-extra": "^11.3.0",
+    "marked": "^15.0.6"
+  }
+}
