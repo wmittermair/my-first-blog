@@ -1,6 +1,6 @@
 ---
 title: Blog
-date: 2024-01-24
+date: Wed Jan 24 2024 01:00:00 GMT+0100 (Mitteleuropäische Normalzeit)
 ---
 
 # Blog-Übersicht
